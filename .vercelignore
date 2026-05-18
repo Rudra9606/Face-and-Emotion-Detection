@@ -1,0 +1,21 @@
+# Ignore the directory containing the large model file
+Models/
+
+# Ignore Jupyter notebooks
+*.ipynb
+
+# Ignore other directories that are not needed for the deployment
+Image_Generator/
+Test_Images/
+Harcascade/
+
+# Ignore environment files
+.env
+.env.local
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
