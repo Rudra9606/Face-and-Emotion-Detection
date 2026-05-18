@@ -3,7 +3,16 @@
   "builds": [
     {
       "src": "app.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "excludeFiles": [
+          "Models/**",
+          "Image_Generator/**",
+          "Test_Images/**",
+          "Harcascade/**",
+          "*.ipynb"
+        ]
+      }
     }
   ],
   "routes": [
