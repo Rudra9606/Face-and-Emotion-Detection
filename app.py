@@ -9,18 +9,32 @@ app = Flask(__name__)
 
 # Load the model
 try:
-    model = load_model('Models/model_v_47.hdf5')
-    print("Model loaded successfully")
+    model_path = 'Models/model_v_47.hdf5'
+    if os.path.exists(model_path):
+        model = load_model(model_path)
+        print(f"✓ Model loaded successfully from {model_path}")
+    else:
+        print(f"✗ Model file not found at {model_path}")
+        model = None
 except Exception as e:
-    print(f"Error loading model: {e}")
+    print(f"✗ Error loading model: {e}")
     model = None
 
 # Load the face cascade
 try:
-    face_cascade = cv2.CascadeClassifier('Harcascade/haarcascade_frontalface_default.xml')
-    print("Cascade loaded successfully")
+    cascade_path = 'Harcascade/haarcascade_frontalface_default.xml'
+    if os.path.exists(cascade_path):
+        face_cascade = cv2.CascadeClassifier(cascade_path)
+        if face_cascade.empty():
+            print(f"✗ Cascade classifier is empty: {cascade_path}")
+            face_cascade = None
+        else:
+            print(f"✓ Cascade loaded successfully from {cascade_path}")
+    else:
+        print(f"✗ Cascade file not found at {cascade_path}")
+        face_cascade = None
 except Exception as e:
-    print(f"Error loading cascade: {e}")
+    print(f"✗ Error loading cascade: {e}")
     face_cascade = None
 
 # Define emotion labels
