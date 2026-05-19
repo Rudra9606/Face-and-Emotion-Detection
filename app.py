@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 # Load the model
 try:
@@ -23,6 +23,10 @@ except Exception as e:
 
 # Define emotion labels
 EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"]
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 @app.route('/api/detect', methods=['POST'])
 def detect_emotion():
@@ -61,10 +65,6 @@ def detect_emotion():
             return jsonify({'emotion': label, 'probability': float(emotion_probability)})
         else:
             return jsonify({'error': 'No face detected'})
-
-@app.route('/')
-def index():
-    return "<h1>Emotion Detection API</h1><p>Use the /api/detect endpoint to post an image.</p>"
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))
