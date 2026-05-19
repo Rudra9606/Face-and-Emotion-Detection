@@ -19,6 +19,7 @@ RUN pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 # Copy application files
 COPY app.py .
 COPY start.sh .
+COPY templates/ templates/
 COPY Models/ Models/
 COPY Harcascade/ Harcascade/
 
