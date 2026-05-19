@@ -5,13 +5,12 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 import os
 
-app = Flask(__name__, 
-            template_folder=os.path.join(os.path.dirname(__file__), 'templates'),
-            static_folder=os.path.join(os.path.dirname(__file__), 'static'))
+app = Flask(__name__)
 
 # Load the model
 try:
     model = load_model('Models/model_v_47.hdf5')
+    print("Model loaded successfully")
 except Exception as e:
     print(f"Error loading model: {e}")
     model = None
@@ -19,6 +18,7 @@ except Exception as e:
 # Load the face cascade
 try:
     face_cascade = cv2.CascadeClassifier('Harcascade/haarcascade_frontalface_default.xml')
+    print("Cascade loaded successfully")
 except Exception as e:
     print(f"Error loading cascade: {e}")
     face_cascade = None
@@ -28,7 +28,11 @@ EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    try:
+        return render_template('index.html')
+    except Exception as e:
+        print(f"Error rendering template: {e}")
+        return f"<h1>Emotion Detection API</h1><p>Error: {e}</p>", 500
 
 @app.route('/api/detect', methods=['POST'])
 def detect_emotion():
