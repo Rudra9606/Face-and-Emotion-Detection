@@ -23,7 +23,13 @@ try:
     print(f"Model file exists: {os.path.exists(model_path)}")
     if os.path.exists(model_path):
         print(f"Model file size: {os.path.getsize(model_path)} bytes")
-        model = load_model(model_path)
+        # Load with safe=False to handle older model formats
+        try:
+            from tensorflow.keras.saving import load_model as keras_load_model
+            model = keras_load_model(model_path, safe_mode=False)
+        except:
+            # Fallback if safe_mode parameter doesn't exist
+            model = load_model(model_path)
         print(f"✓ Model loaded successfully")
     else:
         print(f"✗ Model file not found at {model_path}")
