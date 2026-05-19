@@ -22,11 +22,15 @@ RUN pip install --no-cache-dir --default-timeout=1000 -r requirements.txt
 
 # Copy application files
 COPY app.py .
+COPY start.sh .
 COPY Models/ Models/
 COPY Harcascade/ Harcascade/
+
+# Make start script executable
+RUN chmod +x start.sh
 
 # Expose port
 EXPOSE 8000
 
-# Run with gunicorn - match Railway's PORT environment variable
-CMD ["gunicorn", "--bind", "0.0.0.0:${PORT:-8000}", "--timeout", "180", "--workers", "1", "app:app"]
+# Run startup script
+CMD ["./start.sh"]
