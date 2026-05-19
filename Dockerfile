@@ -4,14 +4,9 @@ FROM python:3.9-slim
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies required for OpenCV and build tools
+# Install system dependencies required for build tools
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgomp1 \
-    libgl1-mesa-glx \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
