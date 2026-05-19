@@ -1,0 +1,13 @@
+.git
+.gitignore
+.vscode
+.env
+.env.local
+__pycache__
+*.pyc
+*.ipynb
+Image_Generator/
+Test_Images/
+.vercel
+.vercelignore
+vercel.json
