@@ -3,20 +3,32 @@ import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
+import os
 
 app = Flask(__name__)
 
 # Load the model
-model = load_model('Models/model_v_47.hdf5')
+try:
+    model = load_model('Models/model_v_47.hdf5')
+except Exception as e:
+    print(f"Error loading model: {e}")
+    model = None
 
 # Load the face cascade
-face_cascade = cv2.CascadeClassifier('Harcascade/haarcascade_frontalface_default.xml')
+try:
+    face_cascade = cv2.CascadeClassifier('Harcascade/haarcascade_frontalface_default.xml')
+except Exception as e:
+    print(f"Error loading cascade: {e}")
+    face_cascade = None
 
 # Define emotion labels
 EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"]
 
 @app.route('/api/detect', methods=['POST'])
 def detect_emotion():
+    if model is None or face_cascade is None:
+        return jsonify({'error': 'Model or cascade classifier not loaded'}), 503
+    
     if 'file' not in request.files:
         return jsonify({'error': 'No file part in the request'}), 400
     file = request.files['file']
@@ -55,4 +67,5 @@ def index():
     return "<h1>Emotion Detection API</h1><p>Use the /api/detect endpoint to post an image.</p>"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 8000))
+    app.run(host='0.0.0.0', port=port, debug=False)
