@@ -2,3 +2,5 @@ Images
 Dataset
 .vercel
 .env*.local
+conversion_log.txt
+convert_model.py
