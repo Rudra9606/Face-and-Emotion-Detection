@@ -74,12 +74,22 @@ def index():
 @app.route('/api/status')
 def status():
     """Debug endpoint to check if models are loaded"""
+    import glob
+    
+    model_files = glob.glob('Models/*') if os.path.exists('Models') else []
+    cascade_files = glob.glob('Harcascade/*') if os.path.exists('Harcascade') else []
+    
     return jsonify({
         'model_loaded': model is not None,
         'cascade_loaded': face_cascade is not None,
         'working_directory': os.getcwd(),
         'model_exists': os.path.exists('Models/model_v_47.hdf5'),
-        'cascade_exists': os.path.exists('Harcascade/haarcascade_frontalface_default.xml')
+        'cascade_exists': os.path.exists('Harcascade/haarcascade_frontalface_default.xml'),
+        'models_directory_exists': os.path.exists('Models'),
+        'harcascade_directory_exists': os.path.exists('Harcascade'),
+        'files_in_models': model_files,
+        'files_in_harcascade': cascade_files,
+        'all_files_in_cwd': os.listdir('.')
     })
 
 @app.route('/api/detect', methods=['POST'])
