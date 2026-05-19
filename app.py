@@ -7,35 +7,51 @@ import os
 
 app = Flask(__name__)
 
+# Debug: Print working directory and file structure
+print(f"Current working directory: {os.getcwd()}")
+print(f"Files in current directory: {os.listdir('.')}")
+if os.path.exists('Models'):
+    print(f"Files in Models/: {os.listdir('Models')}")
+if os.path.exists('Harcascade'):
+    print(f"Files in Harcascade/: {os.listdir('Harcascade')}")
+
 # Load the model
+model = None
 try:
-    model_path = 'Models/model_v_47.hdf5'
+    model_path = os.path.abspath('Models/model_v_47.hdf5')
+    print(f"Attempting to load model from: {model_path}")
+    print(f"Model file exists: {os.path.exists(model_path)}")
     if os.path.exists(model_path):
+        print(f"Model file size: {os.path.getsize(model_path)} bytes")
         model = load_model(model_path)
-        print(f"✓ Model loaded successfully from {model_path}")
+        print(f"✓ Model loaded successfully")
     else:
         print(f"✗ Model file not found at {model_path}")
-        model = None
 except Exception as e:
-    print(f"✗ Error loading model: {e}")
-    model = None
+    print(f"✗ Error loading model: {type(e).__name__}: {e}")
+    import traceback
+    traceback.print_exc()
 
 # Load the face cascade
+face_cascade = None
 try:
-    cascade_path = 'Harcascade/haarcascade_frontalface_default.xml'
+    cascade_path = os.path.abspath('Harcascade/haarcascade_frontalface_default.xml')
+    print(f"Attempting to load cascade from: {cascade_path}")
+    print(f"Cascade file exists: {os.path.exists(cascade_path)}")
     if os.path.exists(cascade_path):
+        print(f"Cascade file size: {os.path.getsize(cascade_path)} bytes")
         face_cascade = cv2.CascadeClassifier(cascade_path)
         if face_cascade.empty():
-            print(f"✗ Cascade classifier is empty: {cascade_path}")
+            print(f"✗ Cascade classifier is empty after loading")
             face_cascade = None
         else:
-            print(f"✓ Cascade loaded successfully from {cascade_path}")
+            print(f"✓ Cascade loaded successfully")
     else:
         print(f"✗ Cascade file not found at {cascade_path}")
-        face_cascade = None
 except Exception as e:
-    print(f"✗ Error loading cascade: {e}")
-    face_cascade = None
+    print(f"✗ Error loading cascade: {type(e).__name__}: {e}")
+    import traceback
+    traceback.print_exc()
 
 # Define emotion labels
 EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"]
@@ -47,6 +63,17 @@ def index():
     except Exception as e:
         print(f"Error rendering template: {e}")
         return f"<h1>Emotion Detection API</h1><p>Error: {e}</p>", 500
+
+@app.route('/api/status')
+def status():
+    """Debug endpoint to check if models are loaded"""
+    return jsonify({
+        'model_loaded': model is not None,
+        'cascade_loaded': face_cascade is not None,
+        'working_directory': os.getcwd(),
+        'model_exists': os.path.exists('Models/model_v_47.hdf5'),
+        'cascade_exists': os.path.exists('Harcascade/haarcascade_frontalface_default.xml')
+    })
 
 @app.route('/api/detect', methods=['POST'])
 def detect_emotion():
