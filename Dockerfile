@@ -1,14 +1,8 @@
-# Use Python 3.9 slim image
-FROM python:3.9-slim
+# Use Python 3.9 standard image (not slim - includes needed system libraries)
+FROM python:3.9
 
 # Set working directory
 WORKDIR /app
-
-# Install system dependencies required for build tools
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .

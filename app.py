@@ -62,7 +62,8 @@ def index():
         return render_template('index.html')
     except Exception as e:
         print(f"Error rendering template: {e}")
-        return f"<h1>Emotion Detection API</h1><p>Error: {e}</p>", 500
+        error_msg = f"Model loaded: {model is not None}, Cascade loaded: {face_cascade is not None}"
+        return f"<h1>Emotion Detection API</h1><p>{error_msg}</p>", 500
 
 @app.route('/api/status')
 def status():
