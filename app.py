@@ -20,6 +20,8 @@ try:
         print(f"[STARTUP] ✗ Model file not found")
 except Exception as e:
     print(f"[STARTUP] ✗ Model loading failed: {e}")
+    import traceback
+    traceback.print_exc()
 
 # Load the face cascade
 face_cascade = None
@@ -38,6 +40,8 @@ try:
         print(f"[STARTUP] ✗ Cascade file not found")
 except Exception as e:
     print(f"[STARTUP] ✗ Cascade loading failed: {e}")
+    import traceback
+    traceback.print_exc()
 
 # Define emotion labels
 EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"]
